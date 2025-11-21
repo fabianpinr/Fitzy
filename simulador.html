@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simulador de Tallas</title>
+  <style>
+    body { font-family: Arial; margin: 40px; }
+    .progress { width: 100%; background: #eee; margin-top: 20px; }
+    .bar { height: 20px; background: #4caf50; width: 0%; }
+    .question { margin-bottom: 20px; }
+    .votes { margin-top: 20px; }
+    .votes div { margin: 5px 0; }
+    .finalBar { height: 25px; background: #2196f3; width: 0%; margin-top: 10px; color: white; text-align: center; }
+    .hidden { display: none; }
+    .center { text-align: center; margin-top: 100px; }
+    button { padding: 8px 16px; margin: 5px; }
+    .voteBarContainer { width: 100%; background: #eee; margin: 5px 0; }
+    .voteBar { height: 20px; background: #2196f3; text-align: right; color: white; padding-right: 5px; }
+.phone-frame {
+  width: 360px;              /* ancho típico de móvil */
+  height: 640px;             /* alto típico de móvil */
+  margin: 0 auto;            /* centrar en pantalla */
+  border: 16px solid #333;   /* borde externo tipo celular */
+  border-radius: 36px;       /* esquinas redondeadas */
+  box-shadow: 0 0 20px rgba(0,0,0,0.5); /* sombra */
+  background: #fff;          /* fondo blanco */
+  overflow-y: auto;          /* scroll si se excede */
+  padding: 20px;
+}
+  </style>
+</head>
+<body>
+  <!-- Pantalla de inicio -->
+  <div class="phone-frame">
+    <div id="inicio" class="center">
+      <h1>Bienvenido a Fitzy</h1>
+      <p>Simulador de tallas personalizado</p>
+      <p>Seleccione su género:</p>
+      <label><input type="radio" name="genero" value="masculino"> Masculino</label>
+      <label><input type="radio" name="genero" value="femenino"> Femenino</label>
+      <br><br>
+      <button onclick="start()">Comenzar</button>
+    </div>
+
+    <!-- Pantalla de preguntas -->
+    <div id="app" class="hidden">
+      <h2>Encuesta de medidas</h2>
+      <div class="question" id="question"></div>
+      <input type="number" id="answer" step="1">
+      <br><br>
+      <button onclick="prev()">Anterior</button>
+      <button id="nextBtn" onclick="next()">Siguiente</button>
+
+      <div class="progress">
+        <div class="bar" id="progressBar"></div>
+      </div>
+
+      <div class="votes" id="votes"></div>
+      <h3 id="result"></h3>
+      <div class="finalBar" id="finalBar"></div>
+      <div id="voteBars"></div>
+    </div>
+  </div>
+</body>
+
+<script>
+let genero = null;
+let questions = [];
+
+const preguntasMasculino = [
+  {text:"Ingrese su estatura (cm)", key:"estatura"},
+  {text:"Ingrese su peso (kg)", key:"peso"},
+  {text:"Ingrese el ancho de sus hombros (cm)", key:"hombros"},
+  {text:"Ingrese su cintura (cm)", key:"cintura"},
+  {text:"Ingrese su espalda (cm)", key:"espalda"}
+];
+
+const preguntasFemenino = [
+  {text:"Ingrese su estatura (cm)", key:"estatura"},
+  {text:"Ingrese su peso (kg)", key:"peso"},
+  {text:"Ingrese el ancho de sus hombros (cm)", key:"hombros"},
+  {text:"Ingrese su cintura (cm)", key:"cintura"},
+  {text:"Ingrese su busto (cm)", key:"busto"}
+];
+
+let answers = {};
+let current = -1;
+let votos = {XS:0, S:0, M:0, L:0, XL:0};
+let votoPorPregunta = {};
+
+function start() {
+  document.getElementById("inicio").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+
+  // ✅ Leer género desde el radio button seleccionado
+  const generoSeleccionado = document.querySelector('input[name="genero"]:checked');
+  genero = generoSeleccionado ? generoSeleccionado.value : "masculino";
+
+  // Definir flujo según género
+  questions = (genero === "masculino") ? preguntasMasculino : preguntasFemenino;
+
+  current = 0;
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[current];
+  document.getElementById("question").innerText = q.text;
+  document.getElementById("answer").value = (answers[q.key] ?? "");
+  updateProgress();
+  updateVotes();
+  updateFinalProgress();
+
+  // Cambiar botón en la última pregunta
+  const nextBtn = document.getElementById("nextBtn");
+  if (current === questions.length - 1) {
+    nextBtn.innerText = "Calcular";
+    nextBtn.onclick = classify;
+  } else {
+    nextBtn.innerText = "Siguiente";
+    nextBtn.onclick = next;
+  }
+
+  // Ocultar barras si no se ha calculado
+  document.getElementById("voteBars").innerHTML = "";
+  document.getElementById("result").innerText = "";
+}
+
+function calcularTalla(key, valor) {
+  if (valor == null || isNaN(valor)) return null;
+  if (key === "peso") {
+    if (valor < 60) return "XS";
+    if (valor <= 70) return "S";
+    if (valor <= 80) return "M";
+    if (valor <= 90) return "L";
+    return "XL";
+  }
+  if (key === "estatura") {
+    if (valor < 160) return "XS";
+    if (valor < 170) return "S";
+    if (valor < 180) return "M";
+    if (valor < 190) return "L";
+    return "XL";
+  }
+  if (key === "cintura") {
+    if (valor < 70) return "XS";
+    if (valor <= 80) return "S";
+    if (valor <= 90) return "M";
+    if (valor <= 100) return "L";
+    return "XL";
+  }
+  if (key === "espalda") {
+    if (valor < 90) return "XS";
+    if (valor <= 100) return "S";
+    if (valor <= 110) return "M";
+    if (valor <= 120) return "L";
+    return "XL";
+  }
+  if (key === "hombros") {
+    if (valor < 40) return "XS";
+    if (valor <= 45) return "S";
+    if (valor <= 50) return "M";
+    if (valor <= 55) return "L";
+    return "XL";
+  }
+  if (key === "busto") {
+    if (valor < 80) return "XS";
+    if (valor <= 90) return "S";
+    if (valor <= 100) return "M";
+    if (valor <= 110) return "L";
+    return "XL";
+  }
+  return null;
+}
+
+function sumarVoto(talla) { if (talla) votos[talla]++; }
+function restarVoto(talla) { if (talla) votos[talla]--; }
+
+function next() {
+  const key = questions[current].key;
+  const valorStr = document.getElementById("answer").value;
+
+  // ✅ Validación: no vacío
+  if (!valorStr) {
+    alert("Por favor ingrese un valor antes de continuar.");
+    return;
+  }
+
+  // ✅ Validación: solo enteros (sin decimales)
+  if (!/^\d+$/.test(valorStr)) {
+    alert("El valor debe ser un número entero, sin decimales.");
+    return;
+  }
+
+  const valor = parseInt(valorStr);
+  answers[key] = valor;
+
+  const nuevaTalla = calcularTalla(key, valor);
+  const tallaAnterior = votoPorPregunta[key];
+  if (tallaAnterior) restarVoto(tallaAnterior);
+
+  if (nuevaTalla) {
+    sumarVoto(nuevaTalla);
+    votoPorPregunta[key] = nuevaTalla;
+  } else {
+    delete votoPorPregunta[key];
+  }
+
+  updateVotes();
+  updateFinalProgress();
+
+  if (current < questions.length - 1) {
+    current++;
+    showQuestion();
+  }
+}
+
+function prev() {
+  if (current > 0) {
+    const key = questions[current].key;
+    const tallaActual = votoPorPregunta[key];
+    if (tallaActual) {
+      restarVoto(tallaActual);
+      delete votoPorPregunta[key];
+    }
+    current--;
+    showQuestion();
+  } else {
+    // ✅ Si estamos en la primera pregunta, volver al inicio
+    document.getElementById("app").classList.add("hidden");
+    document.getElementById("inicio").classList.remove("hidden");
+    current = -1; // reiniciar índice
+  }
+}
+
+function updateProgress() {
+  const percent = ((current + 1) / questions.length) * 100;
+  document.getElementById("progressBar").style.width = percent + "%";
+}
+
+function updateFinalProgress() {
+  const respondidas = Object.keys(votoPorPregunta).length;
+  const percent = Math.round((respondidas / questions.length) * 100);
+  document.getElementById("finalBar").style.width = percent + "%";
+  document.getElementById("finalBar").innerText = percent + "%";
+}
+
+
+function updateVotes() {
+  document.getElementById("votes").innerHTML =
+    "Conteo actual de votos:<br>" +
+    "XS: " + votos.XS + "<br>" +
+    "S: " + votos.S + "<br>" +
+    "M: " + votos.M + "<br>" +
+    "L: " + votos.L + "<br>" +
+    "XL: " + votos.XL;
+}
+function classify() {
+  const key = questions[current].key;
+  const valorStr = document.getElementById("answer").value;
+
+  // ✅ Validación: no vacío
+  if (!valorStr) {
+    alert("Por favor ingrese un valor antes de calcular.");
+    return;
+  }
+
+  // ✅ Validación: solo enteros
+  if (!/^\d+$/.test(valorStr)) {
+    alert("El valor debe ser un número entero, sin decimales.");
+    return;
+  }
+
+  const valor = parseInt(valorStr);
+  answers[key] = valor;
+
+  const nuevaTalla = calcularTalla(key, valor);
+  const tallaAnterior = votoPorPregunta[key];
+  if (tallaAnterior) restarVoto(tallaAnterior);
+
+  if (nuevaTalla) {
+    sumarVoto(nuevaTalla);
+    votoPorPregunta[key] = nuevaTalla;
+  } else {
+    delete votoPorPregunta[key];
+  }
+
+  updateVotes();
+  updateFinalProgress();
+
+  // --- resto de tu lógica de clasificación ---
+  const percent = 100;
+  let totalVotos = Object.values(votos).reduce((a,b) => a+b, 0);
+  let tallasOrdenadas = Object.entries(votos).sort((a,b) => b[1] - a[1]);
+  let top2 = tallasOrdenadas.slice(0,2);
+
+  let barrasHTML = "Resultados finales (Top 2):<br>";
+  for (let [talla, votosTalla] of top2) {
+    let pct = totalVotos > 0 ? Math.round((votosTalla/totalVotos)*100) : 0;
+    barrasHTML += `
+      <div>${talla}: ${pct}%</div>
+      <div class="voteBarContainer">
+        <div class="voteBar" style="width:${pct}%">${votosTalla}</div>
+      </div>
+    `;
+  }
+
+  document.getElementById("result").innerText =
+    percent + "% completado - Tallas más probables";
+  document.getElementById("voteBars").innerHTML = barrasHTML;
+}
+</script>
+</body>
+</html>
+
+
