@@ -514,7 +514,7 @@ function classify() {
 
   const totalVotos = Object.values(votos).reduce((a, b) => a + b, 0);
 
-  // Nueva lógica coherente
+  // 👉 Obtenemos sugerencias (principal y secundaria)
   const sugerencias = getCoherentSuggestions(votos);
 
   if (sugerencias.length === 0) {
@@ -524,25 +524,41 @@ function classify() {
     return;
   }
 
+  // Siempre tomamos explícitamente principal y secundaria
+  const principal = sugerencias[0] || null;
+  const secundaria = sugerencias[1] || null;
+
   let barrasHTML = "Resultados finales:<br>";
 
-  sugerencias.forEach((item, index) => {
-    const titulo =
-      index === 0 ? "Tu mejor match es la talla" : "Sugerencia secundaria";
-
-    const pct = totalVotos > 0
-      ? Math.round((item.votos / totalVotos) * 100)
+  if (principal) {
+    const pctPrincipal = totalVotos > 0
+      ? Math.round((principal.votos / totalVotos) * 100)
       : 0;
 
     barrasHTML += `
-      <div><strong>${titulo}</strong>: Talla ${item.talla}</div>
+      <div><strong>Sugerencia principal</strong>: Talla ${principal.talla}</div>
       <div class="voteBarContainer">
-        <div class="voteBar" style="width:${pct}%">
-          ${item.votos} voto(s)
+        <div class="voteBar" style="width:${pctPrincipal}%">
+          ${principal.votos} voto(s)
         </div>
       </div>
     `;
-  });
+  }
+
+  if (secundaria) {
+    const pctSecundaria = totalVotos > 0
+      ? Math.round((secundaria.votos / totalVotos) * 100)
+      : 0;
+
+    barrasHTML += `
+      <div><strong>Sugerencia secundaria</strong>: Talla ${secundaria.talla}</div>
+      <div class="voteBarContainer">
+        <div class="voteBar" style="width:${pctSecundaria}%">
+          ${secundaria.votos} voto(s)
+        </div>
+      </div>
+    `;
+  }
 
   document.getElementById("result").innerText =
     "100% completado - Tallas más probables";
@@ -551,4 +567,5 @@ function classify() {
 </script>
 </body>
 </html>
+
 
