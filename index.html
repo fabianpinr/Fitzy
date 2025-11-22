@@ -523,7 +523,7 @@ function classify() {
 
   const totalVotos = Object.values(votos).reduce((a, b) => a + b, 0);
 
-  // 👉 Obtenemos sugerencias (principal y secundaria)
+  // Sugerencias coherentes (principal y secundaria)
   const sugerencias = getCoherentSuggestions(votos);
 
   if (sugerencias.length === 0) {
@@ -533,7 +533,6 @@ function classify() {
     return;
   }
 
-  // Siempre tomamos explícitamente principal y secundaria
   const principal = sugerencias[0] || null;
   const secundaria = sugerencias[1] || null;
 
@@ -545,10 +544,10 @@ function classify() {
       : 0;
 
     barrasHTML += `
-      <div><strong>Sugerencia principal</strong>: Talla ${principal.talla}</div>
+      <div><strong>Tu mejor match es la</strong>: Talla ${principal.talla}</div>
       <div class="voteBarContainer">
         <div class="voteBar" style="width:${pctPrincipal}%">
-          ${principal.votos} voto(s)
+          ${pctPrincipal}% de ajuste
         </div>
       </div>
     `;
@@ -563,7 +562,7 @@ function classify() {
       <div><strong>Sugerencia secundaria</strong>: Talla ${secundaria.talla}</div>
       <div class="voteBarContainer">
         <div class="voteBar" style="width:${pctSecundaria}%">
-          ${secundaria.votos} voto(s)
+          ${pctSecundaria}% de ajuste
         </div>
       </div>
     `;
@@ -576,6 +575,7 @@ function classify() {
 </script>
 </body>
 </html>
+
 
 
 
