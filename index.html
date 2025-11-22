@@ -30,12 +30,12 @@
   }
 
   .votoOculto {
-    color: white; /* sigue mostrando el conteo, pero “oculto” para el usuario */
+    color: white; /* conteo interno oculto al usuario */
   }
 
   .phone-frame {
     width: 100%;
-    max-width: 400px;           /* se adapta a desktop pero limitado */
+    max-width: 400px;
     min-height: 540px;
     margin: 0 auto;
     border: 12px solid var(--primary);
@@ -128,7 +128,8 @@
     margin-bottom: 8px;
   }
 
-  #answer {
+  #answerNumber,
+  #answerSize {
     width: 100%;
     padding: 10px;
     border-radius: 8px;
@@ -208,6 +209,7 @@
   <div class="phone-frame">
     <!-- Pantalla de inicio -->
     <div id="inicio" class="center">
+      <!-- Usa tu logo aquí -->
       <img src="data:image/png;base64,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" alt="Logo Fritz" class="logo">
       <h1>Bienvenido/a a Fitzy</h1>
       <p>Simulador de tallas personalizado</p>
@@ -223,7 +225,20 @@
       <img src="data:image/png;base64,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" alt="Logo Fritz" class="logo">
       <h2>Ingresa tus medidas</h2>
       <div class="question" id="question"></div>
-      <input type="number" id="answer" step="1">
+
+      <!-- Campo numérico para medidas -->
+      <input type="number" id="answerNumber" step="1">
+
+      <!-- Select para talla habitual -->
+      <select id="answerSize" class="hidden">
+        <option value="">Selecciona tu talla habitual</option>
+        <option value="XS">XS</option>
+        <option value="S">S</option>
+        <option value="M">M</option>
+        <option value="L">L</option>
+        <option value="XL">XL</option>
+      </select>
+
       <div class="buttons-row">
         <button onclick="prev()">Anterior</button>
         <button id="nextBtn" onclick="next()">Siguiente</button>
@@ -243,20 +258,21 @@
 let genero = null;
 let questions = [];
 
+// Preguntas ajustadas (reemplazamos hombros por talla habitual)
 const preguntasMasculino = [
   {text:"Ingresa tu estatura (cm)", key:"estatura"},
   {text:"Ingresa tu peso (kg)", key:"peso"},
-  {text:"Ingresa el ancho de tus hombros (cm)", key:"hombros"},
-  {text:"Ingresa el ancho de tu cintura (cm)", key:"cintura"},
-  {text:"Ingresa la longitud de tu espalda (cm)", key:"espalda"}
+  {text:"¿Cuál es la talla que sueles usar en esta prenda? (XS–XL)", key:"tallaActual"},
+  {text:"Ingresa el contorno de tu cintura (cm)", key:"cintura"},
+  {text:"Ingresa el contorno de tu pecho (cm)", key:"espalda"} // usamos 'espalda' como pecho
 ];
 
 const preguntasFemenino = [
   {text:"Ingresa tu estatura (cm)", key:"estatura"},
   {text:"Ingresa tu peso (kg)", key:"peso"},
-  {text:"Ingresa el ancho de tus hombros (cm)", key:"hombros"},
-  {text:"Ingresa el ancho de tu cintura (cm)", key:"cintura"},
-  {text:"Ingresa el ancho tu busto (cm)", key:"busto"}
+  {text:"¿Cuál es la talla que sueles usar en esta prenda? (XS–XL)", key:"tallaActual"},
+  {text:"Ingresa el contorno de tu cintura (cm)", key:"cintura"},
+  {text:"Ingresa el contorno de tu busto (cm)", key:"busto"}
 ];
 
 let answers = {};
@@ -267,23 +283,22 @@ let votoPorPregunta = {};
 // Orden lógico de tallas
 const sizeOrder = ["XS", "S", "M", "L", "XL"];
 
+// Lógica de sugerencias coherentes:
+// principal = más votos; secundaria = vecina con más votos
 function getCoherentSuggestions(votos) {
   const totalVotos = Object.values(votos).reduce((a, b) => a + b, 0);
   if (totalVotos === 0) return [];
 
-  // 1. Talla principal = la que tenga más votos
   let mainIndex = 0;
   let maxVotes = -1;
-  const centerIndex = (sizeOrder.length - 1) / 2; // para desempate (M es el centro)
+  const centerIndex = (sizeOrder.length - 1) / 2;
 
   sizeOrder.forEach((talla, idx) => {
     const v = votos[talla];
-
     if (v > maxVotes) {
       maxVotes = v;
       mainIndex = idx;
     } else if (v === maxVotes && v > 0) {
-      // Desempate: elegimos la más cercana al centro
       const currentDist = Math.abs(idx - centerIndex);
       const bestDist = Math.abs(mainIndex - centerIndex);
       if (currentDist < bestDist) {
@@ -294,7 +309,7 @@ function getCoherentSuggestions(votos) {
 
   const mainSize = sizeOrder[mainIndex];
 
-  // 2. Secundaria = mejor vecina (index -1 o index +1) con más votos
+  // Secundaria = vecina con más votos
   const neighbors = [];
   if (mainIndex > 0) neighbors.push(mainIndex - 1);
   if (mainIndex < sizeOrder.length - 1) neighbors.push(mainIndex + 1);
@@ -305,7 +320,6 @@ function getCoherentSuggestions(votos) {
   neighbors.forEach((idx) => {
     const talla = sizeOrder[idx];
     const v = votos[talla];
-
     if (v > bestNeighborVotes) {
       bestNeighborVotes = v;
       secondaryIndex = idx;
@@ -316,7 +330,6 @@ function getCoherentSuggestions(votos) {
     { talla: mainSize, votos: votos[mainSize] }
   ];
 
-  // Solo mostramos secundaria si tiene al menos 1 voto
   if (secondaryIndex !== null && bestNeighborVotes > 0) {
     const secondarySize = sizeOrder[secondaryIndex];
     result.push({
@@ -344,7 +357,20 @@ function start() {
 function showQuestion() {
   const q = questions[current];
   document.getElementById("question").innerText = q.text;
-  document.getElementById("answer").value = (answers[q.key] ?? "");
+
+  const numberInput = document.getElementById("answerNumber");
+  const sizeSelect = document.getElementById("answerSize");
+
+  if (q.key === "tallaActual") {
+    numberInput.classList.add("hidden");
+    sizeSelect.classList.remove("hidden");
+    sizeSelect.value = (answers[q.key] ?? "");
+  } else {
+    numberInput.classList.remove("hidden");
+    sizeSelect.classList.add("hidden");
+    numberInput.value = (answers[q.key] ?? "");
+  }
+
   updateProgress();
   updateVotes();
   updateFinalProgress();
@@ -362,8 +388,32 @@ function showQuestion() {
   document.getElementById("result").innerText = "";
 }
 
+// Lógica basada en tabla unificada
 function calcularTalla(key, valor) {
   if (valor == null || isNaN(valor)) return null;
+
+  // Medida principal: pecho/busto desde tabla unificada
+  if (genero === "masculino" && key === "espalda") { // pecho
+    // HOMBRE (pecho):
+    // XS: 83–88, S: 89–94, M: 95–100, L: 101–106, XL: 107+
+    if (valor < 89) return "XS";
+    if (valor <= 94) return "S";
+    if (valor <= 100) return "M";
+    if (valor <= 106) return "L";
+    return "XL";
+  }
+
+  if (genero === "femenino" && key === "busto") {
+    // MUJER (busto) unificado:
+    // XS: <=84, S: 85–88, M: 89–93, L: 94–100, XL: 101+
+    if (valor <= 84) return "XS";
+    if (valor <= 88) return "S";
+    if (valor <= 93) return "M";
+    if (valor <= 100) return "L";
+    return "XL";
+  }
+
+  // Medidas de apoyo (no principales pero suman votos)
   if (key === "peso") {
     if (valor < 60) return "XS";
     if (valor <= 70) return "S";
@@ -385,59 +435,58 @@ function calcularTalla(key, valor) {
     if (valor <= 100) return "L";
     return "XL";
   }
-  if (key === "espalda") {
-    if (valor < 90) return "XS";
-    if (valor <= 100) return "S";
-    if (valor <= 110) return "M";
-    if (valor <= 120) return "L";
-    return "XL";
-  }
-  if (key === "hombros") {
-    if (valor < 40) return "XS";
-    if (valor <= 45) return "S";
-    if (valor <= 50) return "M";
-    if (valor <= 55) return "L";
-    return "XL";
-  }
-  if (key === "busto") {
-    if (valor < 80) return "XS";
-    if (valor <= 90) return "S";
-    if (valor <= 100) return "M";
-    if (valor <= 110) return "L";
-    return "XL";
-  }
+
   return null;
 }
 
-function sumarVoto(talla) { if (talla) votos[talla]++; }
-function restarVoto(talla) { if (talla) votos[talla]--; }
+function sumarVoto(talla) { if (talla && votos[talla] != null) votos[talla]++; }
+function restarVoto(talla) { if (talla && votos[talla] != null) votos[talla]--; }
 
 function next() {
-  const key = questions[current].key;
-  const valorStr = document.getElementById("answer").value;
+  const q = questions[current];
+  const key = q.key;
 
-  if (!valorStr) {
-    alert("Por favor ingrese un valor antes de continuar.");
-    return;
-  }
+  if (key === "tallaActual") {
+    const talla = document.getElementById("answerSize").value;
+    if (!talla) {
+      alert("Por favor selecciona la talla que sueles usar.");
+      return;
+    }
 
-  if (!/^\d+$/.test(valorStr)) {
-    alert("El valor debe ser un número entero, sin decimales.");
-    return;
-  }
+    answers[key] = talla;
 
-  const valor = parseInt(valorStr);
-  answers[key] = valor;
+    const tallaAnterior = votoPorPregunta[key];
+    if (tallaAnterior) restarVoto(tallaAnterior);
 
-  const nuevaTalla = calcularTalla(key, valor);
-  const tallaAnterior = votoPorPregunta[key];
-  if (tallaAnterior) restarVoto(tallaAnterior);
+    sumarVoto(talla);
+    votoPorPregunta[key] = talla;
 
-  if (nuevaTalla) {
-    sumarVoto(nuevaTalla);
-    votoPorPregunta[key] = nuevaTalla;
   } else {
-    delete votoPorPregunta[key];
+    const valorStr = document.getElementById("answerNumber").value;
+
+    if (!valorStr) {
+      alert("Por favor ingrese un valor antes de continuar.");
+      return;
+    }
+
+    if (!/^\d+$/.test(valorStr)) {
+      alert("El valor debe ser un número entero, sin decimales.");
+      return;
+    }
+
+    const valor = parseInt(valorStr);
+    answers[key] = valor;
+
+    const nuevaTalla = calcularTalla(key, valor);
+    const tallaAnterior = votoPorPregunta[key];
+    if (tallaAnterior) restarVoto(tallaAnterior);
+
+    if (nuevaTalla) {
+      sumarVoto(nuevaTalla);
+      votoPorPregunta[key] = nuevaTalla;
+    } else {
+      delete votoPorPregunta[key];
+    }
   }
 
   updateVotes();
@@ -491,31 +540,49 @@ function updateVotes() {
 }
 
 function classify() {
-  const key = questions[current].key;
-  const valorStr = document.getElementById("answer").value;
+  const q = questions[current];
+  const key = q.key;
 
-  if (!valorStr) {
-    alert("Por favor ingrese un valor antes de calcular.");
-    return;
-  }
+  if (key === "tallaActual") {
+    const talla = document.getElementById("answerSize").value;
+    if (!talla) {
+      alert("Por favor selecciona la talla que sueles usar.");
+      return;
+    }
+    answers[key] = talla;
 
-  if (!/^\d+$/.test(valorStr)) {
-    alert("El valor debe ser un número entero, sin decimales.");
-    return;
-  }
+    const tallaAnterior = votoPorPregunta[key];
+    if (tallaAnterior) restarVoto(tallaAnterior);
 
-  const valor = parseInt(valorStr);
-  answers[key] = valor;
+    sumarVoto(talla);
+    votoPorPregunta[key] = talla;
 
-  const nuevaTalla = calcularTalla(key, valor);
-  const tallaAnterior = votoPorPregunta[key];
-  if (tallaAnterior) restarVoto(tallaAnterior);
-
-  if (nuevaTalla) {
-    sumarVoto(nuevaTalla);
-    votoPorPregunta[key] = nuevaTalla;
   } else {
-    delete votoPorPregunta[key];
+    const valorStr = document.getElementById("answerNumber").value;
+
+    if (!valorStr) {
+      alert("Por favor ingrese un valor antes de calcular.");
+      return;
+    }
+
+    if (!/^\d+$/.test(valorStr)) {
+      alert("El valor debe ser un número entero, sin decimales.");
+      return;
+    }
+
+    const valor = parseInt(valorStr);
+    answers[key] = valor;
+
+    const nuevaTalla = calcularTalla(key, valor);
+    const tallaAnterior = votoPorPregunta[key];
+    if (tallaAnterior) restarVoto(tallaAnterior);
+
+    if (nuevaTalla) {
+      sumarVoto(nuevaTalla);
+      votoPorPregunta[key] = nuevaTalla;
+    } else {
+      delete votoPorPregunta[key];
+    }
   }
 
   updateVotes();
@@ -523,7 +590,6 @@ function classify() {
 
   const totalVotos = Object.values(votos).reduce((a, b) => a + b, 0);
 
-  // Sugerencias coherentes (principal y secundaria)
   const sugerencias = getCoherentSuggestions(votos);
 
   if (sugerencias.length === 0) {
@@ -544,7 +610,7 @@ function classify() {
       : 0;
 
     barrasHTML += `
-      <div><strong>Tu mejor match es la</strong>: Talla ${principal.talla}</div>
+      <div><strong>Sugerencia principal</strong>: Talla ${principal.talla}</div>
       <div class="voteBarContainer">
         <div class="voteBar" style="width:${pctPrincipal}%">
           ${pctPrincipal}% de ajuste
@@ -575,7 +641,3 @@ function classify() {
 </script>
 </body>
 </html>
-
-
-
-
