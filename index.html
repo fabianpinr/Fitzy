@@ -528,7 +528,7 @@ function classify() {
 
   sugerencias.forEach((item, index) => {
     const titulo =
-      index === 0 ? "Sugerencia principal" : "Sugerencia secundaria";
+      index === 0 ? "Tu mejor match es la talla" : "Sugerencia secundaria";
 
     const pct = totalVotos > 0
       ? Math.round((item.votos / totalVotos) * 100)
@@ -551,3 +551,4 @@ function classify() {
 </script>
 </body>
 </html>
+
