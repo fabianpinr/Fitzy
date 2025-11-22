@@ -267,39 +267,47 @@ let votoPorPregunta = {};
 // Orden lógico de tallas
 const sizeOrder = ["XS", "S", "M", "L", "XL"];
 
-// Sugerencias coherentes usando promedio ponderado
 function getCoherentSuggestions(votos) {
   const totalVotos = Object.values(votos).reduce((a, b) => a + b, 0);
   if (totalVotos === 0) return [];
 
-  // 1. Índice promedio ponderado
-  let weightedSum = 0;
-  sizeOrder.forEach((talla, idx) => {
-    weightedSum += votos[talla] * idx; // XS=0, S=1...
-  });
-  const avgIndex = weightedSum / totalVotos;
+  // 1. Talla principal = la que tenga más votos
+  let mainIndex = 0;
+  let maxVotes = -1;
+  const centerIndex = (sizeOrder.length - 1) / 2; // para desempate (M es el centro)
 
-  // 2. Principal = índice más cercano al promedio
-  let mainIndex = Math.round(avgIndex);
-  if (mainIndex < 0) mainIndex = 0;
-  if (mainIndex > sizeOrder.length - 1) mainIndex = sizeOrder.length - 1;
+  sizeOrder.forEach((talla, idx) => {
+    const v = votos[talla];
+
+    if (v > maxVotes) {
+      maxVotes = v;
+      mainIndex = idx;
+    } else if (v === maxVotes && v > 0) {
+      // Desempate: elegimos la más cercana al centro
+      const currentDist = Math.abs(idx - centerIndex);
+      const bestDist = Math.abs(mainIndex - centerIndex);
+      if (currentDist < bestDist) {
+        mainIndex = idx;
+      }
+    }
+  });
+
   const mainSize = sizeOrder[mainIndex];
 
-  // 3. Secundaria = talla vecina más razonable
-  const candidates = [];
-  if (mainIndex > 0) candidates.push(mainIndex - 1);
-  if (mainIndex < sizeOrder.length - 1) candidates.push(mainIndex + 1);
+  // 2. Secundaria = mejor vecina (index -1 o index +1) con más votos
+  const neighbors = [];
+  if (mainIndex > 0) neighbors.push(mainIndex - 1);
+  if (mainIndex < sizeOrder.length - 1) neighbors.push(mainIndex + 1);
 
   let secondaryIndex = null;
-  let bestScore = -Infinity;
+  let bestNeighborVotes = 0;
 
-  candidates.forEach((idx) => {
+  neighbors.forEach((idx) => {
     const talla = sizeOrder[idx];
     const v = votos[talla];
-    const score = v * 10 - Math.abs(idx - avgIndex); // prioriza más votos
 
-    if (score > bestScore) {
-      bestScore = score;
+    if (v > bestNeighborVotes) {
+      bestNeighborVotes = v;
       secondaryIndex = idx;
     }
   });
@@ -308,7 +316,8 @@ function getCoherentSuggestions(votos) {
     { talla: mainSize, votos: votos[mainSize] }
   ];
 
-  if (secondaryIndex !== null) {
+  // Solo mostramos secundaria si tiene al menos 1 voto
+  if (secondaryIndex !== null && bestNeighborVotes > 0) {
     const secondarySize = sizeOrder[secondaryIndex];
     result.push({
       talla: secondarySize,
@@ -567,5 +576,6 @@ function classify() {
 </script>
 </body>
 </html>
+
 
 
